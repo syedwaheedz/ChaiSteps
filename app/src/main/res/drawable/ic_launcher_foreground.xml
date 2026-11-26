@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Saucer -->
+    <path android:fillColor="#F3D9B8" android:pathData="M30,79h48a2.5,2.5 0,0 1,0 5h-48a2.5,2.5 0,0 1,0 -5z" />
+    <!-- Handle -->
+    <path android:strokeColor="#FFF1E0" android:strokeWidth="4.5" android:fillColor="#00000000"
+        android:pathData="M67,52h3.5a7,7 0,0 1,0 14h-4" />
+    <!-- Cup -->
+    <path android:fillColor="#FFF1E0" android:pathData="M35,46h33v14a16.5,16.5 0,0 1,-16.5 16.5a16.5,16.5 0,0 1,-16.5 -16.5z" />
+    <!-- Chai -->
+    <path android:fillColor="#C98A4B" android:pathData="M38,49h27v4h-27z" />
+    <!-- Steam as footsteps -->
+    <path android:fillColor="#FFF1E0" android:pathData="M42.5,37a3.5,5.5 0,1 0,7 0a3.5,5.5 0,1 0,-7 0z" />
+    <path android:fillColor="#FFF1E0" android:pathData="M44.2,29.2a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0z" />
+    <path android:fillColor="#FFF1E0" android:pathData="M54.5,31a3.5,5.5 0,1 0,7 0a3.5,5.5 0,1 0,-7 0z" />
+    <path android:fillColor="#FFF1E0" android:pathData="M56.2,23.2a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0z" />
+</vector>
