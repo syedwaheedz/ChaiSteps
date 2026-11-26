@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chai &amp; Steps</string>
+    <string name="channel_walk">Walk tracking</string>
+    <string name="channel_walk_desc">Shows your walk while it is being recorded</string>
+</resources>
