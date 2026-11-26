@@ -53,7 +53,7 @@ jobs:
             echo "SIGNING_STORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
             echo "signed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::No SIGNING_KEYSTORE_BASE64 secret: the APK is signed with a temporary debug key and cannot update installs signed with the release key."
+            echo "::warning::No SIGNING_KEYSTORE_BASE64 secret: this run's APK is signed with a temporary debug key (test builds only) and no GitHub Release is published."
             echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -89,7 +89,8 @@ jobs:
 
   release:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # Only publish releases signed with the real key, so every release can update the previous one.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.build.outputs.signed == 'true'
     runs-on: ubuntu-latest
     concurrency:
       group: release
@@ -112,10 +113,6 @@ jobs:
             echo
             echo "Download \`ChaiSteps-$VERSION.apk\` on your Android phone (Android 8.0+) and open it to install."
             echo "All unit and UI tests and lint passed for this build. Checksums: \`SHA256SUMS.txt\`."
-            if [ "$SIGNED" != "true" ]; then
-              echo
-              echo "> Signed with a temporary key (no signing secrets configured)."
-            fi
           } > notes.md
           gh release create "v$VERSION-build$BUILD" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "Chai & Steps $VERSION (build $BUILD)" --notes-file notes.md --latest

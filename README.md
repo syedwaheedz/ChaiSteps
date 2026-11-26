@@ -49,7 +49,8 @@ environment variables, which CI reads from repository secrets:
 | `SIGNING_KEY_ALIAS` | `chaisteps` |
 | `SIGNING_KEY_PASSWORD` | key password |
 
-Without the secrets, CI signs with a temporary debug key and warns about it. Keep the keystore safe:
+Without the secrets, CI still builds and tests, signs the artifact with a temporary debug key and
+skips publishing a Release. Keep the keystore safe:
 updates to an installed app must be signed with the same key.
 
 ## CI
