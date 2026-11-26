@@ -29,6 +29,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.background
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -66,7 +68,10 @@ fun OnboardingScreen(vm: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Image(painterResource(R.drawable.ic_launcher_foreground), null, Modifier.size(120.dp))
+            androidx.compose.foundation.layout.Box(
+                Modifier.size(112.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(28.dp))
+                    .background(androidx.compose.ui.res.colorResource(R.color.ic_launcher_background)),
+            ) { Image(painterResource(R.drawable.ic_launcher_foreground), null, Modifier.size(112.dp)) }
             Text("Chai & Steps", style = MaterialTheme.typography.headlineMedium)
             Text(
                 "Track your weight-loss journey, steps, walks and daily chai — all on your phone, private to you.",

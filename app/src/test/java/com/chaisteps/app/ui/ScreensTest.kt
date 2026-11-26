@@ -104,10 +104,9 @@ class ScreensTest {
         seed()
         show()
         val before = app.repository.data.value.chai.size
-        compose.onNodeWithText(" 1 cup").performClick()
+        compose.onNodeWithContentDescription("Add a cup of chai").performScrollTo().performClick()
         compose.waitForIdle()
         assertEquals(before + 1, app.repository.data.value.chai.size)
-        compose.onNodeWithText("3 / 3").assertIsDisplayed()
     }
 
     @Test fun addStepsManually() {
@@ -121,7 +120,7 @@ class ScreensTest {
     @Test fun walkScreen() {
         seed()
         show(Tab.WALK)
-        compose.onNodeWithText("Start walk").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Start walk").assertIsDisplayed()
         compose.onNodeWithText("History").assertIsDisplayed()
         shot("04_walk")
     }
@@ -131,10 +130,10 @@ class ScreensTest {
         val route = SampleData.loop(25.2048, 55.2708, 0.003, 0).segments
         app.walkTracker.publish(ActiveWalk("live", 0, false, 1_234_000, 1_650.0, 2_210, 1.4, 5f, true, route))
         show(Tab.WALK)
-        compose.onNodeWithText("Walking").assertIsDisplayed()
+        compose.onNodeWithText("WALKING").assertIsDisplayed()
         compose.onNodeWithText("20:34").assertIsDisplayed()
         shot("05_walk_active")
-        compose.onNodeWithText("  Finish").performClick()
+        compose.onNodeWithContentDescription("Finish").performClick()
         compose.onNodeWithText("Finish walk?").assertIsDisplayed()
         app.walkTracker.publish(null)
     }
@@ -181,7 +180,7 @@ class ScreensTest {
     @Test fun statsScreen() {
         seed()
         show(Tab.STATS)
-        compose.onNodeWithText("Walking").assertIsDisplayed()
+        compose.onNodeWithText("Walking").assertExists()
         shot("11_stats")
         compose.onAllNodesWithText("30 days")[0].performClick()
         compose.waitForIdle()

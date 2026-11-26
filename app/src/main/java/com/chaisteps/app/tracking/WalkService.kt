@@ -23,6 +23,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.chaisteps.app.ChaiStepsApp
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.chaisteps.app.MainActivity
 import com.chaisteps.app.R
 import com.chaisteps.app.data.Repository
@@ -42,6 +50,8 @@ class WalkService : Service(), LocationListener {
     private var recorder: WalkRecorder? = null
     private var wakeLock: PowerManager.WakeLock? = null
     private var stepsAcquired = false
+    private var fusedClient: FusedLocationProviderClient? = null
+    private var fusedCallback: LocationCallback? = null
     private val app get() = application as ChaiStepsApp
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -80,13 +90,7 @@ class WalkService : Service(), LocationListener {
         }
         recorder = WalkRecorder.start(Repository.newId(), now())
 
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val providers = lm.getProviders(true)
-        if (LocationManager.GPS_PROVIDER in providers) {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2_000L, 0f, this, Looper.getMainLooper())
-        } else if (LocationManager.NETWORK_PROVIDER in providers) {
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2_000L, 0f, this, Looper.getMainLooper())
-        }
+        startLocationUpdates()
 
         app.stepMonitor.acquire()
         stepsAcquired = true
@@ -109,6 +113,49 @@ class WalkService : Service(), LocationListener {
                 delay(1_000)
             }
         }
+    }
+
+    /**
+     * Uses Google Play services' fused location provider (the same engine Google Fit uses: GPS
+     * combined with Wi-Fi, cell and motion sensors) and falls back to the raw GPS chip on phones
+     * without Play services.
+     */
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        val playServices = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS
+        if (playServices) {
+            val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2_000L)
+                .setMinUpdateIntervalMillis(1_000L)
+                .setWaitForAccurateLocation(true)
+                .build()
+            val client = LocationServices.getFusedLocationProviderClient(this)
+            val callback = object : LocationCallback() {
+                override fun onLocationResult(result: LocationResult) {
+                    result.locations.forEach { onLocationChanged(it) }
+                }
+            }
+            runCatching { client.requestLocationUpdates(request, callback, Looper.getMainLooper()) }
+                .onSuccess {
+                    fusedClient = client
+                    fusedCallback = callback
+                    return
+                }
+        }
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val providers = lm.getProviders(true)
+        val provider = when {
+            LocationManager.GPS_PROVIDER in providers -> LocationManager.GPS_PROVIDER
+            LocationManager.NETWORK_PROVIDER in providers -> LocationManager.NETWORK_PROVIDER
+            else -> return
+        }
+        lm.requestLocationUpdates(provider, 2_000L, 0f, this, Looper.getMainLooper())
+    }
+
+    private fun stopLocationUpdates() {
+        fusedCallback?.let { cb -> fusedClient?.removeLocationUpdates(cb) }
+        fusedCallback = null
+        fusedClient = null
+        (getSystemService(Context.LOCATION_SERVICE) as LocationManager).removeUpdates(this)
     }
 
     private fun publish() {
@@ -141,7 +188,7 @@ class WalkService : Service(), LocationListener {
     }
 
     private fun cleanup() {
-        (getSystemService(Context.LOCATION_SERVICE) as LocationManager).removeUpdates(this)
+        stopLocationUpdates()
         if (stepsAcquired) {
             app.stepMonitor.release()
             stepsAcquired = false

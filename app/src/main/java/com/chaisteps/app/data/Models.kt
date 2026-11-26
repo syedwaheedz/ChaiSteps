@@ -15,6 +15,7 @@ data class Profile(
     val startWeightKg: Double? = null,
     val goalWeightKg: Double? = null,
     val stepGoal: Int = 10_000,
+    val activeMinutesGoal: Int = 30,
     val chaiLimit: Int = 3,
     val weightUnit: WeightUnit = WeightUnit.KG,
     val distanceUnit: DistanceUnit = DistanceUnit.KM,
