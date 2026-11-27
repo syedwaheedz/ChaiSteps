@@ -72,7 +72,7 @@ fun WeightScreen(vm: MainViewModel, @Suppress("UNUSED_PARAMETER") nav: Nav) {
             )
         },
     ) {
-        SectionCard(title = "Journey", icon = Icons.Filled.MonitorWeight, accent = Accents.weight) {
+        SectionCard(title = "Journey", accent = Accents.weight) {
             if (latest == null) {
                 EmptyHint("Log your first weigh-in to start tracking.")
             } else {
@@ -123,7 +123,7 @@ fun WeightScreen(vm: MainViewModel, @Suppress("UNUSED_PARAMETER") nav: Nav) {
         }
 
         if (data.weights.size >= 2) {
-            SectionCard(title = "Progress", icon = Icons.Filled.ShowChart, accent = Accents.weight) {
+            SectionCard(title = "Progress", accent = Accents.weight) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Range.entries.forEach { r -> FilterChip(selected = range == r, onClick = { range = r }, label = { Text(r.label) }) }
                 }

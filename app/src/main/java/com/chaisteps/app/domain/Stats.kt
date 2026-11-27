@@ -80,6 +80,12 @@ class Stats(private val data: AppData, private val today: Long, private val zone
 
     fun allTimeTotals(): WalkTotals = totals(data.walks)
 
+    /** Minutes spent on recorded walks on [day]. */
+    fun walkMinutesOn(day: Long): Int = (walksBetween(day, day).sumOf { it.activeMillis } / 60_000).toInt()
+
+    fun walkMinutesSeries(days: Int): List<DayValue> =
+        (days - 1 downTo 0).map { back -> (today - back).let { DayValue(it, walkMinutesOn(it).toDouble()) } }
+
     fun longestWalk(): WalkSession? = data.walks.maxByOrNull { it.distanceM }?.takeIf { it.distanceM > 0 }
 
     /** Fastest average pace among walks of at least 500 m. */

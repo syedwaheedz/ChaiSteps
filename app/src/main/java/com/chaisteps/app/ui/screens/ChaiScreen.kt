@@ -67,7 +67,7 @@ fun ChaiScreen(vm: MainViewModel, @Suppress("UNUSED_PARAMETER") nav: Nav) {
     val over = count > p.chaiLimit
 
     ScreenScaffold(title = "Chai") {
-        SectionCard(title = "Today", icon = Icons.Filled.EmojiFoodBeverage, accent = Accents.chai) {
+        SectionCard(title = "Today", accent = Accents.chai) {
             Row(verticalAlignment = Alignment.Bottom) {
                 Text("$count", style = MaterialTheme.typography.displaySmall, color = if (over) MaterialTheme.colorScheme.error else Accents.chai)
                 Text(

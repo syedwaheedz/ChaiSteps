@@ -46,7 +46,7 @@ fun StatsScreen(vm: MainViewModel, nav: Nav) {
         }
 
         // ---- Steps ----
-        SectionCard(title = "Steps", icon = Icons.AutoMirrored.Filled.DirectionsWalk, accent = Accents.steps) {
+        SectionCard(title = "Steps", accent = Accents.steps) {
             val series = stats.stepSeries(days)
             BarChart(series.map { it.value }, Accents.steps, labels = axisLabels(series), goal = p.stepGoal.toDouble(), description = "Steps per day")
             Spacer(Modifier.height(12.dp))
@@ -65,7 +65,7 @@ fun StatsScreen(vm: MainViewModel, nav: Nav) {
         }
 
         // ---- Walking ----
-        SectionCard(title = "Walking", icon = Icons.Filled.DirectionsRun, accent = Accents.walk) {
+        SectionCard(title = "Walking", accent = Accents.walk) {
             val weekly = stats.weeklyWalkDistance(if (days <= 7) 8 else if (days <= 30) 12 else 16)
             Text("Distance per week", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(6.dp))
@@ -97,7 +97,7 @@ fun StatsScreen(vm: MainViewModel, nav: Nav) {
         }
 
         // ---- Weight ----
-        SectionCard(title = "Weight", icon = Icons.Filled.MonitorWeight, accent = Accents.weight) {
+        SectionCard(title = "Weight", accent = Accents.weight) {
             val w = p.weightUnit
             StatRow(
                 Triple("7 days", stats.weightChange(7)?.let { Format.signedWeight(it, w) } ?: "–", null),
@@ -112,7 +112,7 @@ fun StatsScreen(vm: MainViewModel, nav: Nav) {
         }
 
         // ---- Chai ----
-        SectionCard(title = "Chai", icon = Icons.Filled.EmojiFoodBeverage, accent = Accents.chai) {
+        SectionCard(title = "Chai", accent = Accents.chai) {
             val series = stats.chaiSeries(days)
             BarChart(series.map { it.value }, Accents.chai, height = 100.dp, labels = axisLabels(series), goal = p.chaiLimit.toDouble(), description = "Cups of chai per day")
             Spacer(Modifier.height(12.dp))

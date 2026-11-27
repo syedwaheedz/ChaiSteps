@@ -90,7 +90,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
     }
 
     ScreenScaffold(title = "Settings", onBack = { nav.back() }) {
-        SectionCard(title = "Profile", icon = Icons.Filled.Person) {
+        SectionCard(title = "Profile") {
             SettingRow("Name", p.name.ifBlank { "Not set" }) { editName = true }
             SettingRow("Height", p.heightCm?.let { "${Format.num(it, 0)} cm" } ?: "Not set") {
                 editing = EditField("Height", p.heightCm?.let { Format.num(it, 0) } ?: "", "cm", true) { v ->
@@ -105,7 +105,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
             }
         }
 
-        SectionCard(title = "Goals", icon = Icons.Filled.Flag) {
+        SectionCard(title = "Goals") {
             SettingRow("Goal weight", p.goalWeightKg?.let { Format.weight(it, p.weightUnit) } ?: "Not set") {
                 editing = EditField("Goal weight", p.goalWeightKg?.let { Format.num(Format.kgToUnit(it, p.weightUnit), 1) } ?: "", wl, true) { v ->
                     val kg = Format.unitToKg(v, p.weightUnit)
@@ -124,7 +124,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
             }
         }
 
-        SectionCard(title = "Chai preferences", icon = Icons.Filled.EmojiFoodBeverage) {
+        SectionCard(title = "Chai preferences") {
             Text("Quick-add chai", style = MaterialTheme.typography.labelLarge)
             Spacer(Modifier.height(6.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -137,7 +137,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
             SugarStepper(p.defaultSugarTsp) { v -> vm.updateProfile { it.copy(defaultSugarTsp = v) } }
         }
 
-        SectionCard(title = "Units", icon = Icons.Filled.Straighten) {
+        SectionCard(title = "Units") {
             Text("Weight", style = MaterialTheme.typography.labelLarge)
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                 WeightUnit.entries.forEachIndexed { i, u ->
@@ -157,7 +157,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
             }
         }
 
-        SectionCard(title = "Backup", icon = Icons.Filled.Backup) {
+        SectionCard(title = "Backup") {
             Text(
                 "Your data stays on this phone. Save a backup file to move it to a new phone or keep it safe.",
                 style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -169,7 +169,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
             }
         }
 
-        SectionCard(title = "About", icon = Icons.Filled.Info) {
+        SectionCard(title = "About") {
             Text("Chai & Steps ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", style = MaterialTheme.typography.bodyMedium)
             Text("Maps © OpenStreetMap contributors", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

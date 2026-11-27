@@ -6,10 +6,14 @@ import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.EmojiFoodBeverage
 import androidx.compose.material.icons.filled.MonitorWeight
-import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.DonutLarge
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
+import com.chaisteps.app.ui.theme.Accents
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,7 +43,7 @@ import com.chaisteps.app.ui.screens.WalkScreen
 import com.chaisteps.app.ui.screens.WeightScreen
 
 enum class Tab(val route: String, val label: String, val icon: ImageVector) {
-    TODAY("today", "Today", Icons.Filled.WbSunny),
+    TODAY("today", "Today", Icons.Filled.DonutLarge),
     WALK("walk", "Walk", Icons.AutoMirrored.Filled.DirectionsWalk),
     WEIGHT("weight", "Weight", Icons.Filled.MonitorWeight),
     CHAI("chai", "Chai", Icons.Filled.EmojiFoodBeverage),
@@ -56,6 +60,14 @@ class Nav(private val controller: NavHostController) {
     fun settings() = controller.navigate("settings") { launchSingleTop = true }
     fun walkDetail(id: String) = controller.navigate("walk/$id")
     fun back() = controller.popBackStack()
+}
+
+private fun tabColor(tab: Tab) = when (tab) {
+    Tab.TODAY -> Accents.steps
+    Tab.WALK -> Accents.walk
+    Tab.WEIGHT -> Accents.weight
+    Tab.CHAI -> Accents.chai
+    Tab.STATS -> Accents.walk
 }
 
 @Composable
@@ -77,19 +89,29 @@ fun ChaiStepsRoot(vm: MainViewModel, startTab: Tab = Tab.TODAY) {
     }
     val backStack by controller.currentBackStackEntryAsState()
     val route = backStack?.destination?.route
-    val showBar = Tab.entries.any { it.route == route } || route == null
+    val walking by vm.activeWalk.collectAsStateWithLifecycle()
+    // While walking, the live map takes the whole screen.
+    val showBar = (Tab.entries.any { it.route == route } || route == null) &&
+        !(walking != null && (route == Tab.WALK.route || (route == null && startTab == Tab.WALK)))
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbar) },
         bottomBar = {
             if (showBar) {
-                NavigationBar {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainer, tonalElevation = 0.dp) {
                     Tab.entries.forEach { tab ->
                         NavigationBarItem(
                             selected = route == tab.route || (route == null && tab == startTab),
                             onClick = { nav.tab(tab) },
                             icon = { Icon(tab.icon, contentDescription = null) },
                             label = { Text(tab.label) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = tabColor(tab),
+                                selectedTextColor = tabColor(tab),
+                                indicatorColor = tabColor(tab).copy(alpha = 0.14f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
                         )
                     }
                 }

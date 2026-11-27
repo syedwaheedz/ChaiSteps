@@ -16,6 +16,15 @@ val signingProps = Properties().apply {
 fun signingValue(key: String, env: String): String? =
     System.getenv(env)?.takeIf { it.isNotBlank() } ?: signingProps.getProperty(key)
 
+// Google Maps key: CI secret MAPS_API_KEY, or MAPS_API_KEY in local.properties. Without one the app
+// uses a clean CARTO street map instead.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val mapsApiKey: String = System.getenv("MAPS_API_KEY")?.takeIf { it.isNotBlank() }
+    ?: localProps.getProperty("MAPS_API_KEY", "")
+
 val versionProps = Properties().apply { rootProject.file("version.properties").inputStream().use { load(it) } }
 
 android {
@@ -28,6 +37,8 @@ android {
         targetSdk = 35
         versionCode = (findProperty("versionCode") as String?)?.toInt() ?: 1
         versionName = versionProps.getProperty("versionName", "1.0.0")
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("boolean", "HAS_MAPS_KEY", mapsApiKey.isNotBlank().toString())
     }
 
     signingConfigs {
@@ -101,6 +112,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.osmdroid)
+    implementation(libs.play.services.location)
+    implementation(libs.maps.compose)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 

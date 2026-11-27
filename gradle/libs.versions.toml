@@ -10,6 +10,8 @@ coroutines = "1.9.0"
 navigation = "2.8.5"
 work = "2.10.0"
 osmdroid = "6.1.20"
+playServicesLocation = "21.3.0"
+mapsCompose = "6.2.1"
 junit = "4.13.2"
 robolectric = "4.14.1"
 roborazzi = "1.39.0"
@@ -38,6 +40,8 @@ compose-material-icons = { module = "androidx.compose.material:material-icons-ex
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 osmdroid = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroid" }
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
