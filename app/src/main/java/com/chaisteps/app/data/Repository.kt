@@ -111,6 +111,12 @@ class Repository(
         d.putStepDay(day.copy(manualSteps = total.coerceAtLeast(0) - day.sensorSteps))
     }
 
+    /** Removes every manual adjustment for the day, leaving only sensor-counted steps. */
+    fun clearManualSteps(epochDay: Long) = update { d ->
+        val day = d.stepDay(epochDay)
+        d.putStepDay(day.copy(manualSteps = 0))
+    }
+
     // ---------- Chai ----------
 
     fun addChai(type: ChaiType, sugarTsp: Double, size: CupSize, timeMillis: Long) = update { d ->

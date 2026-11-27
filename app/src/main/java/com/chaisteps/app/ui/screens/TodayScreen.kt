@@ -252,6 +252,11 @@ fun TodayScreen(vm: MainViewModel, nav: Nav) {
             onAdd = vm::addManualSteps,
             onSet = vm::setDayTotal,
             onDismiss = { showSteps = false },
+            manualSteps = { day -> data.stepDays.firstOrNull { it.epochDay == day }?.manualSteps ?: 0 },
+            onUndoManual = { day ->
+                vm.clearManualSteps(day)
+                vm.showMessage("Manual steps removed")
+            },
         )
     }
 }

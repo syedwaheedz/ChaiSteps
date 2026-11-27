@@ -48,6 +48,9 @@ class RepositoryTest {
         assertEquals(5_000, repo.data.value.stepDay(5).total)
         repo.setDayTotal(5, 1_000)
         assertEquals(1_000, repo.data.value.stepDay(5).total)
+        repo.addManualSteps(5, 20_000)
+        repo.clearManualSteps(5)
+        assertEquals(3_000, repo.data.value.stepDay(5).total) // back to sensor steps only
     }
 
     @Test fun walksRoutesExportImport() = runTest {

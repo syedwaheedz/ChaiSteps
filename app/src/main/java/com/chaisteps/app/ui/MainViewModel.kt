@@ -84,6 +84,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addManualSteps(epochDay: Long, steps: Int) = repo.addManualSteps(epochDay, steps)
     fun setDayTotal(epochDay: Long, total: Int) = repo.setDayTotal(epochDay, total)
+    fun clearManualSteps(epochDay: Long) = repo.clearManualSteps(epochDay)
 
     fun stepsSensorAvailable() = StepSensor.isAvailable(app)
     fun stepsPermissionGranted() = StepSensor.hasPermission(app)
