@@ -10,7 +10,7 @@ weight progress, and how much chai you drink. Everything stays on your phone.
 | **Today** | Step ring vs. your goal (distance and energy estimated from steps), goal streak, a 7-day step chart, quick +1 chai, weight vs. goal, start a walk |
 | **Steps** | Counted by the phone's step sensor, also in the background (synced every 15 min, reboot-safe). You can add steps or set a day's total by hand |
 | **Walks** | A foreground service records the GPS route, distance, moving time (pauses excluded), pace, speed, steps, climb and calories, and keeps running with the screen off. Pause, resume, finish or discard from the app or the notification. A walk interrupted by the system is recovered |
-| **Routes** | Every walk's route on **Google Maps** (with a clean light / dark map style), or on a CARTO street map when the app is built without a Maps key. Full-screen live map while walking |
+| **Routes** | Every walk's route on **Google Maps** (with a clean light / dark map style), or on a restyled OpenStreetMap map when the app is built without a Maps key. Full-screen live map while walking |
 | **GPS** | Google Play services' fused location provider (GPS + Wi-Fi + sensors, as in Google Fit), with a raw-GPS fallback on phones without Play services |
 | **Weight** | Log weigh-ins (one per day, any date) with notes. Shows progress from start to goal, BMI, 4-week trend, projected goal date, and a chart (1M / 3M / 6M / All) |
 | **Chai** | One-tap add of your usual chai, or pick the type (Karak, Doodh Patti, Masala, Sulaimani, Green…), cup size and sugar. Shows daily limit, caffeine, sugar, calories, 7-day chart, streak within your limit |
@@ -41,7 +41,7 @@ Requires JDK 17+ and the Android SDK (platform 35).
 ### Google Maps key
 
 Maps use Google Maps when the build has a Maps SDK for Android API key; otherwise they fall back to
-CARTO street maps (no key needed).
+restyled OpenStreetMap maps (no key needed).
 
 1. In [Google Cloud Console](https://console.cloud.google.com/google/maps-apis), create a project,
    enable **Maps SDK for Android**, and create an API key (Google's free monthly credit covers personal use).

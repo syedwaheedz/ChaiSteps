@@ -166,7 +166,15 @@ fun ConfirmDialog(title: String, text: String, confirm: String, onConfirm: () ->
 
 /** Add steps to a day, or set its total. */
 @Composable
-fun StepsDialog(today: Long, currentTotal: (Long) -> Int, onAdd: (Long, Int) -> Unit, onSet: (Long, Int) -> Unit, onDismiss: () -> Unit) {
+fun StepsDialog(
+    today: Long,
+    currentTotal: (Long) -> Int,
+    onAdd: (Long, Int) -> Unit,
+    onSet: (Long, Int) -> Unit,
+    onDismiss: () -> Unit,
+    manualSteps: (Long) -> Int = { 0 },
+    onUndoManual: (Long) -> Unit = {},
+) {
     var day by rememberSaveable { mutableStateOf(today) }
     var text by rememberSaveable { mutableStateOf("") }
     var setTotal by rememberSaveable { mutableStateOf(false) }
@@ -178,6 +186,22 @@ fun StepsDialog(today: Long, currentTotal: (Long) -> Int, onAdd: (Long, Int) -> 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 DateField(day, today) { day = it }
                 Text("Currently ${Format.steps(currentTotal(day))} steps", style = MaterialTheme.typography.bodyMedium)
+                val manual = manualSteps(day)
+                if (manual != 0) {
+                    // Manual entries (added or "set total" adjustments) can be undone in one tap;
+                    // steps counted by the phone's sensor are kept.
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "${if (manual > 0) "+" else "−"}${Format.steps(kotlin.math.abs(manual))} entered by hand",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = {
+                            onUndoManual(day)
+                            onDismiss()
+                        }) { Text("Undo manual steps", color = MaterialTheme.colorScheme.error) }
+                    }
+                }
                 NumberField(text, { text = it }, if (setTotal) "Total steps" else "Steps to add", decimal = false)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = { setTotal = !setTotal }) {

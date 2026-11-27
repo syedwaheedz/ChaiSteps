@@ -69,6 +69,18 @@ class DialogsTest {
         assertEquals(12_000, app.repository.data.value.stepDay(today).total)
     }
 
+    @Test fun undoMistakenManualSteps() {
+        app.repository.addManualSteps(today, 20_000)
+        compose.waitForIdle()
+        assertEquals(25_430, app.repository.data.value.stepDay(today).total)
+        compose.onNodeWithContentDescription("Add or edit steps").performClick()
+        compose.onNodeWithText("+20,000 entered by hand").assertExists()
+        compose.onNodeWithText("Undo manual steps").performClick()
+        compose.waitForIdle()
+        // Sample data's 5,430 steps are sensor steps; only the mistaken manual 20,000 is removed.
+        assertEquals(5_430, app.repository.data.value.stepDay(today).total)
+    }
+
     @Test fun logWeight() {
         compose.onNode(hasText("Weight") and SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab)).performClick()
         compose.onAllNodesWithText("Log weight", useUnmergedTree = true)[0].performClick()

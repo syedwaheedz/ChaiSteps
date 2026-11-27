@@ -50,7 +50,9 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import org.osmdroid.tileprovider.tilesource.XYTileSource
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
@@ -65,7 +67,7 @@ private var playServicesOk: Boolean? = null
 
 /**
  * Shows a GPS route on Google Maps (when the app was built with a Maps API key and Google Play
- * services is available) or on a clean CARTO street map otherwise. With [follow] the camera keeps
+ * services is available) or on a restyled OpenStreetMap map otherwise (no key needed). With [follow] the camera keeps
  * the latest point in view (live walk); otherwise it fits the whole route.
  */
 @Composable
@@ -81,7 +83,7 @@ fun RouteMap(segments: List<List<RoutePoint>>, modifier: Modifier = Modifier, fo
     }
     val dark = MaterialTheme.colorScheme.background.luminance() < 0.3f
     if (useGoogle) GoogleRouteMap(segments, modifier, follow, interactive, dark)
-    else CartoRouteMap(segments, modifier, follow, interactive, dark)
+    else OsmRouteMap(segments, modifier, follow, interactive, dark)
 }
 
 private fun List<List<RoutePoint>>.latLngs() = map { seg -> seg.map { LatLng(it.lat, it.lon) } }
@@ -141,28 +143,25 @@ private fun GoogleRouteMap(segments: List<List<RoutePoint>>, modifier: Modifier,
     }
 }
 
-private val cartoLight = XYTileSource(
-    "CartoVoyager", 0, 20, 256, ".png",
-    arrayOf(
-        "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
-        "https://b.basemaps.cartocdn.com/rastertiles/voyager/",
-        "https://c.basemaps.cartocdn.com/rastertiles/voyager/",
-    ),
-    "© OpenStreetMap contributors © CARTO",
+/** Softer, less saturated OpenStreetMap tiles for a cleaner look. */
+private fun lightFilter() = ColorMatrixColorFilter(
+    ColorMatrix().apply {
+        setSaturation(0.55f)
+        postConcat(ColorMatrix(floatArrayOf(1f, 0f, 0f, 0f, 10f, 0f, 1f, 0f, 0f, 10f, 0f, 0f, 1f, 0f, 10f, 0f, 0f, 0f, 1f, 0f)))
+    },
 )
 
-private val cartoDark = XYTileSource(
-    "CartoDarkMatter", 0, 20, 256, ".png",
-    arrayOf(
-        "https://a.basemaps.cartocdn.com/dark_all/",
-        "https://b.basemaps.cartocdn.com/dark_all/",
-        "https://c.basemaps.cartocdn.com/dark_all/",
-    ),
-    "© OpenStreetMap contributors © CARTO",
+/** Grey, inverted and dimmed tiles: a dark map that matches the dark theme. */
+private fun darkFilter() = ColorMatrixColorFilter(
+    ColorMatrix().apply {
+        setSaturation(0f)
+        postConcat(ColorMatrix(floatArrayOf(-1f, 0f, 0f, 0f, 255f, 0f, -1f, 0f, 0f, 255f, 0f, 0f, -1f, 0f, 255f, 0f, 0f, 0f, 1f, 0f)))
+        postConcat(ColorMatrix().apply { setScale(0.82f, 0.82f, 0.86f, 1f) })
+    },
 )
 
 @Composable
-private fun CartoRouteMap(segments: List<List<RoutePoint>>, modifier: Modifier, follow: Boolean, interactive: Boolean, dark: Boolean) {
+private fun OsmRouteMap(segments: List<List<RoutePoint>>, modifier: Modifier, follow: Boolean, interactive: Boolean, dark: Boolean) {
     val context = LocalContext.current
     val routeColor = Accents.route.toArgb()
     val mapView = remember {
@@ -188,8 +187,8 @@ private fun CartoRouteMap(segments: List<List<RoutePoint>>, modifier: Modifier, 
             factory = { mapView },
             modifier = Modifier.fillMaxSize(),
             update = { map ->
-                val source = if (dark) cartoDark else cartoLight
-                if (map.tileProvider.tileSource.name() != source.name()) map.setTileSource(source)
+                if (map.tileProvider.tileSource.name() != TileSourceFactory.MAPNIK.name()) map.setTileSource(TileSourceFactory.MAPNIK)
+                map.overlayManager.tilesOverlay.setColorFilter(if (dark) darkFilter() else lightFilter())
                 map.setOnTouchListener(if (interactive) null else View.OnTouchListener { _, _ -> true })
                 map.overlays.removeAll { it is OsmPolyline }
                 segments.filter { it.size >= 2 }.forEach { seg ->
@@ -223,7 +222,7 @@ private fun CartoRouteMap(segments: List<List<RoutePoint>>, modifier: Modifier, 
             },
         )
         Text(
-            "© OpenStreetMap © CARTO",
+            "© OpenStreetMap contributors",
             Modifier.align(Alignment.BottomStart).padding(6.dp)
                 .background(MaterialTheme.colorScheme.background.copy(alpha = 0.7f)).padding(horizontal = 4.dp),
             fontSize = 9.sp,

@@ -17,7 +17,7 @@ fun signingValue(key: String, env: String): String? =
     System.getenv(env)?.takeIf { it.isNotBlank() } ?: signingProps.getProperty(key)
 
 // Google Maps key: CI secret MAPS_API_KEY, or MAPS_API_KEY in local.properties. Without one the app
-// uses a clean CARTO street map instead.
+// uses a restyled OpenStreetMap map instead.
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
