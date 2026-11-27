@@ -2,6 +2,7 @@
 
 | Version | Download | Signed with |
 |---|---|---|
+| 1.1.1 | [ChaiSteps-1.1.1.apk](ChaiSteps-1.1.1.apk?raw=1) | Chai & Steps release key · fixes the map without a Google key (OpenStreetMap) |
 | 1.1.0 | [ChaiSteps-1.1.0.apk](ChaiSteps-1.1.0.apk?raw=1) | Chai & Steps release key · clean redesign, fused GPS; CARTO maps (Google Maps needs the MAPS_API_KEY CI build) |
 | 1.0.0 | [ChaiSteps-1.0.0.apk](ChaiSteps-1.0.0.apk?raw=1) | Chai & Steps release key (SHA-256 cert 5990c0e6…fb43a) |
 
