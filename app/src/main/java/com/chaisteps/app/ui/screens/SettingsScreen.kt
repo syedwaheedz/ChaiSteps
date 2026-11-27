@@ -171,7 +171,7 @@ fun SettingsScreen(vm: MainViewModel, nav: Nav) {
 
         SectionCard(title = "About") {
             Text("Chai & Steps ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", style = MaterialTheme.typography.bodyMedium)
-            Text("Maps © OpenStreetMap contributors", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Maps © OpenStreetMap contributors / Google", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 

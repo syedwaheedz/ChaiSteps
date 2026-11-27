@@ -70,7 +70,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
         run: |
-          if [ -z "$MAPS_API_KEY" ]; then echo "::notice::No MAPS_API_KEY secret: the app uses CARTO street maps instead of Google Maps."; fi
+          if [ -z "$MAPS_API_KEY" ]; then echo "::notice::No MAPS_API_KEY secret: the app uses OpenStreetMap instead of Google Maps."; fi
           ./gradlew :app:assembleRelease -PversionCode=${{ steps.version.outputs.build }}
           mkdir -p dist
           cp app/build/outputs/apk/release/app-release.apk "dist/ChaiSteps-${{ steps.version.outputs.version }}.apk"
